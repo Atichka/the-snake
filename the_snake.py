@@ -68,7 +68,7 @@ class Apple(GameObject):
         self,
     ):
         """Инициализирует яблоко в случайной позиции."""
-        super().__init__(body_color=(255, 0, 0))
+        super().__init__(body_color=APPLE_COLOR)
         self.randomize_position()
 
     def randomize_position(self, snake_positions=None):
@@ -78,15 +78,13 @@ class Apple(GameObject):
         rows = SCREEN_HEIGHT // GRID_SIZE
 
         # Случайная клетка
-        while True:
+        new_position = None
+        while new_position is None or new_position in snake_positions:
             position_x = random.randint(0, cols - 1) * GRID_SIZE
             position_y = random.randint(0, rows - 1) * GRID_SIZE
             new_position = (position_x, position_y)
 
-            # Если позиция не занята змейкой — выходим из цикла
-            if snake_positions is None or new_position not in snake_positions:
-                self.position = new_position
-                return
+        self.position = new_position
 
     # Метод draw класса Apple
     def draw(self):
@@ -143,7 +141,6 @@ class Snake(GameObject):
         self.positions = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
         self.direction = RIGHT
         self.next_direction = None
-        self.last = None
 
 
 # Функция обработки действий пользователя
@@ -178,9 +175,8 @@ def main():
         snake.move()
         if snake.get_head_position() in snake.positions[1:]:
             snake.reset()
-            screen.fill(BOARD_BACKGROUND_COLOR)
 
-        if snake.get_head_position() == apple.position:
+        elif snake.get_head_position() == apple.position:
             snake.length += 1
             apple.randomize_position()
         screen.fill(BOARD_BACKGROUND_COLOR)
