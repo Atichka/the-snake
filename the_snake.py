@@ -79,7 +79,9 @@ class Apple(GameObject):
 
         # Случайная клетка
         new_position = None
-        while new_position is None or new_position in snake_positions:
+        while new_position is None or (
+            snake_positions and new_position in snake_positions
+        ):
             position_x = random.randint(0, cols - 1) * GRID_SIZE
             position_y = random.randint(0, rows - 1) * GRID_SIZE
             new_position = (position_x, position_y)
